@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final List<Task> historyStorage = new ArrayList<>();
-    private final int MAXCOUNTHISTORY = 11;
+    private final int MAXCOUNTHISTORY = 10;
 
     @Override
     public void addTask(Task task) {
