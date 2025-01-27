@@ -8,18 +8,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class InMemoryHistoryManager implements HistoryManager{
+public class InMemoryHistoryManager implements HistoryManager {
     private final List<Task> historyStorage = new ArrayList<>();
+    private final int MAXCOUNTHISTORY = 11;
 
     @Override
     public void addTask(Task task) {
-        if (Objects.isNull(task)){
+        if (Objects.isNull(task)) {
             return;
         }
-    historyStorage.add(task.getSnapShot());
-        if(historyStorage.size() >= 11){
+
+        if (historyStorage.size() >= MAXCOUNTHISTORY) {
             historyStorage.remove(0);
         }
+        historyStorage.add(task.getSnapShot());
     }
 
     @Override
