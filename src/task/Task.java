@@ -10,19 +10,21 @@ public class Task implements EngineExecutionContext {
     protected TaskStatus priority;
     protected Integer id;
 
-    public Task () {
+    public Task() {
     }
-    public Task (String name, String description, TaskStatus priority) {
+
+    public Task(String name, String description, TaskStatus priority) {
         this.name = name;
         this.description = description;
         this.priority = priority;
 
     }
-    public Task (String name, String description, TaskStatus priority, Integer id) {
+
+    public Task(String name, String description, TaskStatus priority, Integer id) {
         this.name = name;
         this.description = description;
         this.priority = priority;
-        this.id=id;
+        this.id = id;
     }
 
     public String getName() {
