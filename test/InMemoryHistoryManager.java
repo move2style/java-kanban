@@ -1,19 +1,23 @@
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
+import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Subtask;
 import task.Task;
 import task.TaskStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
-    public static void main(String[] args) {
-        TaskManager taskManager = Managers.getDefaultTaskManager();
-        HistoryManager historyManager = Managers.getDefaultHistoryManager();
+import static org.junit.jupiter.api.Assertions.*;
 
+class InMemoryHistoryManagerTest {
+    TaskManager taskManager = Managers.getDefaultTaskManager();
+    HistoryManager historyManager = Managers.getDefaultHistoryManager();
+
+
+    @Test
+    void HistoryManagerTests() {
         Task newtask1 = new Task("Zadacha po spisky#1", "opisanie", TaskStatus.NEW);
         taskManager.createTask(newtask1);
         Task newtask2 = new Task("Zadacha po spisky#2", "opisanie",TaskStatus.NEW);
@@ -50,40 +54,19 @@ public class Main {
         taskManager.updateSubtask(newsubtask4_1);
 
         taskManager.getEpicById(4);
+        List<Task> history = taskManager.getHistory();
         taskManager.getEpicById(4);
-        taskManager.getTaskById(1);
+        //проверить удаление и запись в истории, если в истории только 1 элемент
+        assertEquals(history.size(), taskManager.getHistory().size(), "Неверное количество задач.");
+        assertEquals(history.getFirst(), taskManager.getHistory().getFirst(), "Не совпадают.");
+
+        //проверить запись новых задач и повторный просмотр задачи из центра списка + запись в конец списка
+        Task firstReplic = taskManager.getTaskById(1);
         taskManager.getSubtaskById(8);
+        history = taskManager.getHistory();
         taskManager.getTaskById(1);
-        taskManager.getTaskById(1);
-        taskManager.getSubtaskListForEpic(4);
-
-        printAllTasks(taskManager);
-
+        assertEquals(history.size(), taskManager.getHistory().size(), "Неверное количество задач.");
+        assertEquals(firstReplic, taskManager.getHistory().getLast(), "Объекты не равны");
     }
 
-    private static void printAllTasks(TaskManager manager) {
-
-
-        System.out.println("Задачи:");
-        for (Object task : manager.getTaskList()) {
-            System.out.println(task);
-        }
-        System.out.println("Подзадачи:");
-        for (Object subtask : manager.getSubtaskList()) {
-            System.out.println(subtask);
-        }
-        System.out.println("Эпики:");
-        for (Object epic : manager.getEpicList()) {
-            System.out.println(epic);
-            Epic epic1 = (Epic) epic;
-
-            for (Object task : manager.getSubtaskListForEpic(epic1.getId())) {
-                System.out.println("--> " + task);
-            }
-        }
-        System.out.println("История:");
-        for (Object task : manager.getHistory()) {
-            System.out.println(task);
-        }
-    }
 }

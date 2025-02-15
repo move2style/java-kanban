@@ -1,9 +1,6 @@
-package test;
-
 import manager.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.Epic;
 import task.Subtask;
@@ -11,12 +8,11 @@ import task.Task;
 import task.TaskStatus;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static task.TaskStatus.NEW;
 
-class TaskTest {
+class TaskManagerTest {
     TaskManager taskManager = Managers.getDefaultTaskManager();
     HistoryManager historyManager = Managers.getDefaultHistoryManager();
 
@@ -192,30 +188,32 @@ class TaskTest {
         assertEquals(task.getName(), taskManager.getTaskById(taskId).getName(), "Name не совпадают.");
         assertEquals(task.getStatus(), taskManager.getTaskById(taskId).getStatus(), "Status не совпадают.");
     }
+
     @Test
-    void inMemoryHistoryManagerSavedAllVersionTask() {
-        Task task = new Task("Test inMemoryHistoryManagerSavedAllVersionTask",
-                "Test inMemoryHistoryManagerSavedAllVersionTask description", NEW);
-        taskManager.createTask(task);
-        final int taskId = task.getId();
-        final Task savedTask = taskManager.getTaskById(taskId);
+    void removingSubtasksHaveNotOldId() {
+        Epic newepic1 = new Epic("Epic po spisky#1", "opisanie",TaskStatus.NEW);
+        taskManager.createEpic(newepic1);
+        Epic newepic2 = new Epic("Epic po spisky#2", "opisanie",TaskStatus.NEW);
+        taskManager.createEpic(newepic2);
+        Subtask newsubtask1 = new Subtask("Subtask #1", "opisanie",TaskStatus.NEW,newepic1.getId());
+        Subtask newsubtask2 = new Subtask("Subtask #2", "opisanie",TaskStatus.NEW,newepic1.getId());
+        Subtask newsubtask3 = new Subtask("Subtask #3", "opisanie",TaskStatus.NEW,newepic1.getId());
+        taskManager.createSubtask(newsubtask1);
+        taskManager.createSubtask(newsubtask2);
+        taskManager.createSubtask(newsubtask3);
+        Subtask newsubtask4 = new Subtask("Subtask #4", "opisanie",TaskStatus.NEW,newepic2.getId());
+        Subtask newsubtask5 = new Subtask("Subtask #5", "opisanie",TaskStatus.NEW,newepic2.getId());
+        taskManager.createSubtask(newsubtask4);
+        taskManager.createSubtask(newsubtask5);
 
-        Task newtask1_1 = new Task("Zadacha po spisky#1_1", "opisanie", TaskStatus.IN_PROGRESS,1);
-        taskManager.updateTask(newtask1_1);
-        final Task savedTaskNew = taskManager.getTaskById(taskId);
+        Epic epic = taskManager.getEpicById(newsubtask1.getEpicId());
+        List<Integer> subtasks = epic.getSubtaskIds();
 
-        List<Task> taskList = taskManager.getHistory();
-        Task task1 = taskList.get(0);
-        Task task2 = taskList.get(1);
+        taskManager.deleteSubtask(newsubtask1.getId());
+        assertNull(taskManager.getSubtaskById(newsubtask1.getId()), "ID подзадачи найден.");
 
-        assertEquals(task1, savedTask, "Task не совпадают.");
-        assertEquals(task2, savedTaskNew, "Update Task не совпадают.");
-        assertEquals(task1.getId(), savedTask.getId(), "Id не совпадают.");
-        assertEquals(task1.getDescription(), savedTask.getDescription(), "Description не совпадают.");
-        assertEquals(task1.getName(), savedTask.getName(), "Name не совпадают.");
-        assertEquals(task2.getStatus(), savedTaskNew.getStatus(), "Status не совпадают.");        assertEquals(task1.getId(), savedTask.getId(), "Id не совпадают.");
-        assertEquals(task2.getDescription(), savedTaskNew.getDescription(), "Description не совпадают.");
-        assertEquals(task2.getName(), savedTaskNew.getName(), "Name не совпадают.");
-        assertEquals(task2.getStatus(), savedTaskNew.getStatus(), "Status не совпадают.");
+        epic = taskManager.getEpicById(newsubtask1.getEpicId());
+        List<Integer> subtasks2 = epic.getSubtaskIds();
+        assertNotEquals(subtasks,subtasks2, "ID подзадача в епике не удалена.");
     }
 }
