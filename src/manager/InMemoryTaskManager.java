@@ -196,7 +196,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtask(Integer idSubtask) {
         if (subtaskMap.get(idSubtask) != null) {
-            List<Integer> subtaskList = getSubtaskListForEpic(getSubtaskById(idSubtask).getEpicId());
+            List subtaskList = getSubtaskListForEpic(getSubtaskById(idSubtask).getEpicId());
             subtaskList.remove(getSubtaskById(idSubtask));
             Epic updateEpic = getEpicById(getSubtaskById(idSubtask).getEpicId());
             updateEpic.setSubtaskIds(subtaskList);

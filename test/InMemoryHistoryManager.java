@@ -51,7 +51,7 @@ class InMemoryHistoryManagerTest {
         taskManager.updateSubtask(newsubtask4_1);
 
         taskManager.getEpicById(4);
-        List<Task> history = taskManager.getHistory();
+        List history = taskManager.getHistory();
         taskManager.getEpicById(4);
         //проверить удаление и запись в истории, если в истории только 1 элемент
         assertEquals(history.size(), taskManager.getHistory().size(), "Неверное количество задач.");

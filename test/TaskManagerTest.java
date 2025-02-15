@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static task.TaskStatus.NEW;
 
 class TaskManagerTest {
-    TaskManager taskManager = Managers.getDefaultTaskManager();
+    TaskManager  taskManager = Managers.getDefaultTaskManager();
     HistoryManager historyManager = Managers.getDefaultHistoryManager();
 
     @Test
@@ -26,7 +26,7 @@ class TaskManagerTest {
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task, savedTask, "Задачи не совпадают.");
 
-        final List<Task> tasks = taskManager.getTaskList();
+        final List tasks = taskManager.getTaskList();
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");

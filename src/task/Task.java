@@ -1,8 +1,8 @@
 package task;
 
+import java.util.Objects;
 import org.junit.platform.engine.support.hierarchical.EngineExecutionContext;
 
-import java.util.Objects;
 
 public class Task implements EngineExecutionContext {
     protected String name;

@@ -53,7 +53,6 @@ public class Main {
         taskManager.getSubtaskListForEpic(4);
 
         printAllTasks(taskManager);
-
     }
 
     private static void printAllTasks(TaskManager manager) {
