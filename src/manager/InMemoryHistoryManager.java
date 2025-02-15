@@ -57,7 +57,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void removeNode(Node node) {
-        if (node == null) {//если пришёл пустой объект
+        //если пришёл пустой объект
+        if (node == null){
             return;
         }
         Node nextNode = node.next;
