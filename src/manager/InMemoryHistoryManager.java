@@ -1,6 +1,7 @@
 package manager;
 
 import task.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,9 +58,10 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void removeNode(Node node) {
-        if (node == null){
+        if (node == null) {
             return;
         }
+
         Node nextNode = node.next;
         Node prevNode = node.prev;
         int idRemove = -1;
