@@ -1,30 +1,30 @@
 package task;
 
 import java.util.Objects;
+import org.junit.platform.engine.support.hierarchical.EngineExecutionContext;
 
-public class Task {
+
+public class Task implements EngineExecutionContext {
     protected String name;
     protected String description;
     protected TaskStatus priority;
     protected Integer id;
 
-    public Task () {
+    public Task() {
     }
-    public Task (String name, String description, TaskStatus priority) {
+
+    public Task(String name, String description, TaskStatus priority) {
         this.name = name;
         this.description = description;
         this.priority = priority;
 
     }
-    public Task (String name, String description, TaskStatus priority, Integer id) {
+
+    public Task(String name, String description, TaskStatus priority, Integer id) {
         this.name = name;
         this.description = description;
         this.priority = priority;
-        this.id=id;
-    }
-
-    public Task getSnapShot (){
-        return new Task(this.getName(), this.getDescription(), this.getStatus(), this.getId());
+        this.id = id;
     }
 
     public String getName() {

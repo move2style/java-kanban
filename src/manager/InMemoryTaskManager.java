@@ -4,7 +4,6 @@ import task.Epic;
 import task.Subtask;
 import task.Task;
 import task.TaskStatus;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -197,6 +196,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtask(Integer idSubtask) {
         if (subtaskMap.get(idSubtask) != null) {
+            List subtaskList = getSubtaskListForEpic(getSubtaskById(idSubtask).getEpicId());
+            subtaskList.remove(getSubtaskById(idSubtask));
+            Epic updateEpic = getEpicById(getSubtaskById(idSubtask).getEpicId());
+            updateEpic.setSubtaskIds(subtaskList);
+            updateEpic(updateEpic);
+
             subtaskMap.remove(idSubtask);
         }
     }
