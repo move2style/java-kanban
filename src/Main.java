@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         File file = new File(FILE_NAME);
-        if (!file.exists()){
+        if (!file.exists()) {
             createFile(FILE_NAME);
         }
         TaskManager taskManager = Managers.getDefaultTaskManager(file);
@@ -63,11 +63,11 @@ public class Main {
         printAllTasks(taskManager);
     }
 
-    private static File createFile (String fileName) {
-        try{
+    private static File createFile(String fileName) {
+        try {
             return Files.createFile(Paths.get(fileName)).toFile();
-        } catch (IOException exception ){
-            System.out.println("Файл для файлового хранилища не создан: "+exception.getMessage());
+        } catch (IOException exception) {
+            System.out.println("Файл для файлового хранилища не создан: " + exception.getMessage());
         }
         throw new UnsupportedOperationException("Файл не создан");
     }
