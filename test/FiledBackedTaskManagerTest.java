@@ -10,13 +10,13 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FiledBackedTaskManagerTest  {
+class FiledBackedTaskManagerTest {
 
     File tmp = File.createTempFile("str", ".tmp");
     TaskManager taskManager = Managers.getDefaultTaskManager(tmp);
+
     FiledBackedTaskManagerTest() throws IOException {
     }
-
 
     @Test
     void shouldSaveAndReloadData() throws IOException {

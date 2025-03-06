@@ -19,18 +19,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public void save (){
+    public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(getHeader());
-            for(Map.Entry<Integer, Task> entry : this.taskMap.entrySet()){
+            for (Map.Entry<Integer, Task> entry : this.taskMap.entrySet()) {
                 Task task = entry.getValue();
                 writer.write(toString(task));
             }
-            for(Map.Entry<Integer, Epic> entry : this.epicMap.entrySet()){
+            for (Map.Entry<Integer, Epic> entry : this.epicMap.entrySet()) {
                 Epic epic = entry.getValue();
                 writer.write(toString(epic));
             }
-            for(Map.Entry<Integer, Subtask> entry : this.subtaskMap.entrySet()){
+            for (Map.Entry<Integer, Subtask> entry : this.subtaskMap.entrySet()) {
                 Subtask subtask = entry.getValue();
                 writer.write(toString(subtask));
             }
@@ -41,16 +41,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) throws IOException {
-    final FileBackedTaskManager result = new FileBackedTaskManager(file);
+        final FileBackedTaskManager result = new FileBackedTaskManager(file);
         FileReader reader = new FileReader(file, StandardCharsets.UTF_8);
-        try (BufferedReader br = new BufferedReader(reader)){
+        try (BufferedReader br = new BufferedReader(reader)) {
             while (br.ready()) {
                 String line = br.readLine();
-                if(line.equals("id,type,name,status,description,epic")) {
+                if (line.equals("id,type,name,status,description,epic")) {
                     line = br.readLine();
                 }
                 Task task = fromString(line);
-                if (task instanceof Epic){
+                if (task instanceof Epic) {
                     result.createEpic((Epic) task);
                 } else if (task instanceof Subtask) {
                     result.createSubtask((Subtask) task);
@@ -58,7 +58,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     result.createTask(task);
                 }
             }
-        }  catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Произошла ошибка во время чтения файла.");
         }
         return result;
@@ -67,20 +67,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static final String DELIMITER = ",";
 
-   private String getHeader() {
+    private String getHeader() {
         return "id,type,name,status,description,epic\n";
     }
 
-    private String toString (Task task) {
+    private String toString(Task task) {
 //        1,TASK,Task1,NEW,Description task1,
         return task.getId() + DELIMITER + task.getType() + DELIMITER + task.getName() + DELIMITER +
                 task.getStatus() + DELIMITER + task.getDescription() + DELIMITER + "\n";
     }
-    private String toString (Epic epic) {
+
+    private String toString(Epic epic) {
         return epic.getId() + DELIMITER + epic.getType() + DELIMITER + epic.getName() + DELIMITER +
                 epic.getStatus() + DELIMITER + epic.getDescription() + DELIMITER + "\n";
     }
-    private String toString (Subtask subtask) {
+
+    private String toString(Subtask subtask) {
         //3,SUBTASK,Sub Task2,DONE,Description sub task3,2
         return subtask.getId() + DELIMITER + subtask.getType() + DELIMITER + subtask.getName() + DELIMITER +
                 subtask.getStatus() + DELIMITER + subtask.getDescription() + DELIMITER + subtask.getEpicId() + "\n";
@@ -88,23 +90,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static Task fromString(String value) {
         String[] splValue = value.split(DELIMITER);
-        String  type = splValue[1];
+        String type = splValue[1];
         String name = splValue[2];
         TaskStatus status = TaskStatus.valueOf(splValue[3]);
         String description = splValue[4];
         int epicId = 0;
-        if(splValue.length > 5) {
+        if (splValue.length > 5) {
             epicId = Integer.parseInt(splValue[5]);
         }
 
-        if (type.equals("TASK")){
-            Task task = new Task(name,description,status);
+        if (type.equals("TASK")) {
+            Task task = new Task(name, description, status);
             return task;
         } else if (type.equals("EPIC")) {
-            Epic epic = new Epic(name,description,status);
+            Epic epic = new Epic(name, description, status);
             return epic;
         } else if (type.equals("SUBTASK")) {
-            Subtask subtask = new Subtask(name,description,status,epicId);
+            Subtask subtask = new Subtask(name, description, status, epicId);
             return subtask;
         }
         throw new IllegalArgumentException("Неправильный тип задачи");
