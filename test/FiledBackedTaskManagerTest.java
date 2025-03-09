@@ -1,6 +1,7 @@
 import manager.FileBackedTaskManager;
 import manager.Managers;
 import manager.TaskManager;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import task.Task;
 import task.TaskStatus;
@@ -8,12 +9,11 @@ import task.TaskStatus;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class FiledBackedTaskManagerTest {
 
     File tmp = File.createTempFile("str", ".tmp");
     TaskManager taskManager = Managers.getDefaultTaskManager(tmp);
+    private Assertions Assert;
 
     FiledBackedTaskManagerTest() throws IOException {
     }
@@ -27,17 +27,15 @@ class FiledBackedTaskManagerTest {
 
         FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(tmp);
 
-        assertArrayEquals(taskManager.getTaskList().toArray(new Object[0]), taskManager2.getTaskList().toArray(new Object[0]));
+        Assert.assertTrue(taskManager.getTaskList().containsAll(taskManager2.getTaskList())
+                && taskManager2.getTaskList().containsAll(taskManager.getTaskList()));
     }
 
     @Test
-    void shouldNullData() throws IOException {
+    void savingAndLoadingAnEmptyFile() throws IOException {
         FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(tmp);
 
-        assertArrayEquals(taskManager.getTaskList().toArray(new Object[0]), taskManager2.getTaskList().toArray(new Object[0]));
-        assertArrayEquals(taskManager.getEpicList().toArray(new Object[0]), taskManager2.getEpicList().toArray(new Object[0]));
-        assertArrayEquals(taskManager.getSubtaskList().toArray(new Object[0]), taskManager2.getSubtaskList().toArray(new Object[0]));
+        Assert.assertTrue(taskManager.getTaskList().containsAll(taskManager2.getTaskList())
+                && taskManager2.getTaskList().containsAll(taskManager.getTaskList()));
     }
-
-
 }

@@ -1,6 +1,9 @@
 import manager.Managers;
 import manager.TaskManager;
 import task.Epic;
+import task.Subtask;
+import task.Task;
+import task.TaskStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,9 +15,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         File file = new File(FILE_NAME);
-        if (!file.exists()) {
-            createFile(FILE_NAME);
-        }
         TaskManager taskManager = Managers.getDefaultTaskManager(file);
 
 //        Task newtask1 = new Task("Zadacha po spisky#1", "opisanie", TaskStatus.NEW);
@@ -61,15 +61,6 @@ public class Main {
         taskManager.getSubtaskListForEpic(4);
 
         printAllTasks(taskManager);
-    }
-
-    private static File createFile(String fileName) {
-        try {
-            return Files.createFile(Paths.get(fileName)).toFile();
-        } catch (IOException exception) {
-            System.out.println("Файл для файлового хранилища не создан: " + exception.getMessage());
-        }
-        throw new UnsupportedOperationException("Файл не создан");
     }
 
     private static void printAllTasks(TaskManager manager) {

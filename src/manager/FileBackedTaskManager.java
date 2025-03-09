@@ -8,11 +8,13 @@ import task.TaskStatus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-
+    private static final String FILE_NAME = "java-kanban\\src\\resources\\storage.csv";
     private File file;
 
     public FileBackedTaskManager(File file) {
@@ -34,13 +36,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Subtask subtask = entry.getValue();
                 writer.write(toString(subtask));
             }
-//            writer.newLine();
         } catch (Exception exception) {
             throw new ManagerSaveException("Невозможно работать с файлом.");
         }
     }
 
     public static FileBackedTaskManager loadFromFile(File file) throws IOException {
+        if (!file.exists()) {
+            createFile(FILE_NAME);
+        }
+
+
         final FileBackedTaskManager result = new FileBackedTaskManager(file);
         FileReader reader = new FileReader(file, StandardCharsets.UTF_8);
         try (BufferedReader br = new BufferedReader(reader)) {
@@ -72,7 +78,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String toString(Task task) {
-//        1,TASK,Task1,NEW,Description task1,
         return task.getId() + DELIMITER + task.getType() + DELIMITER + task.getName() + DELIMITER +
                 task.getStatus() + DELIMITER + task.getDescription() + DELIMITER + "\n";
     }
@@ -83,7 +88,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String toString(Subtask subtask) {
-        //3,SUBTASK,Sub Task2,DONE,Description sub task3,2
         return subtask.getId() + DELIMITER + subtask.getType() + DELIMITER + subtask.getName() + DELIMITER +
                 subtask.getStatus() + DELIMITER + subtask.getDescription() + DELIMITER + subtask.getEpicId() + "\n";
     }
@@ -110,6 +114,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             return subtask;
         }
         throw new IllegalArgumentException("Неправильный тип задачи");
+    }
+
+    private static File createFile(String fileName) {
+        try {
+            return Files.createFile(Paths.get(fileName)).toFile();
+        } catch (IOException exception) {
+            System.out.println("Файл для файлового хранилища не создан: " + exception.getMessage());
+        }
+        throw new UnsupportedOperationException("Файл не создан");
     }
 
     @Override
@@ -149,36 +162,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public List getTaskList() {
-        return super.getTaskList();
-    }
-
-    @Override
-    public List getSubtaskList() {
-        return super.getSubtaskList();
-    }
-
-    @Override
-    public List getEpicList() {
-        return super.getEpicList();
-    }
-
-    @Override
-    public Task getTaskById(Integer idTask) {
-        return super.getTaskById(idTask);
-    }
-
-    @Override
-    public Subtask getSubtaskById(Integer idSubtask) {
-        return super.getSubtaskById(idSubtask);
-    }
-
-    @Override
-    public Epic getEpicById(Integer idEpic) {
-        return super.getEpicById(idEpic);
-    }
-
-    @Override
     public void removeTaskMap() {
         super.removeTaskMap();
         save();
@@ -212,20 +195,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void deleteEpic(Integer idEpic) {
         super.deleteEpic(idEpic);
         save();
-    }
-
-    @Override
-    public List getSubtaskListForEpic(Integer idEpic) {
-        return super.getSubtaskListForEpic(idEpic);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return super.getHistory();
     }
 }
