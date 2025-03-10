@@ -1,0 +1,10 @@
+id,type,name,status,description,epic
+1,TASK,Zadacha po spisky#1_1,IN_PROGRESS,opisanie,
+2,TASK,Zadacha po spisky#2,NEW,opisanie,
+3,EPIC,Epic po spisky#1_1,NEW,opisanie,
+4,EPIC,Epic po spisky#2,NEW,opisanie,
+5,SUBTASK,Subtask #1,NEW,opisanie,3
+6,SUBTASK,Subtask #2,NEW,opisanie,3
+7,SUBTASK,Subtask #3,NEW,opisanie,3
+8,SUBTASK,Subtask #5_1,NEW,opisanie 5_1,4
+9,SUBTASK,Subtask #5_1,NEW,opisanie 5_1,4
