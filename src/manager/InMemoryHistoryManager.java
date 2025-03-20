@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
 import task.Task;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -82,6 +83,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             node.task = null;
             node.next = null;
             nextNode.prev = null;
+            head = nextNode;
         } else if (node.next == null) {
             idRemove = node.task.getId();
             node.task = null;

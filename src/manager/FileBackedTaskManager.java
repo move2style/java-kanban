@@ -10,31 +10,38 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.stream.Collectors;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static final String FILE_NAME = "java-kanban\\src\\resources\\storage.csv";
     private File file;
+    static int ids = 0;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
     }
 
+    public FileBackedTaskManager() {
+    }
+
     public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(getHeader());
-            for (Map.Entry<Integer, Task> entry : this.taskMap.entrySet()) {
-                Task task = entry.getValue();
-                writer.write(toString(task));
-            }
-            for (Map.Entry<Integer, Epic> entry : this.epicMap.entrySet()) {
-                Epic epic = entry.getValue();
-                writer.write(toString(epic));
-            }
-            for (Map.Entry<Integer, Subtask> entry : this.subtaskMap.entrySet()) {
-                Subtask subtask = entry.getValue();
-                writer.write(toString(subtask));
-            }
+
+            String epicString = epicMap.values().stream()
+                    .map(this::toString)
+                    .collect(Collectors.joining());
+            String subTaskString = subtaskMap.values().stream()
+                    .map(this::toString)
+                    .collect(Collectors.joining());
+            String taskString = taskMap.values().stream()
+                    .map(this::toString)
+                    .collect(Collectors.joining());
+
+            writer.write(taskString + epicString + subTaskString);
         } catch (Exception exception) {
             throw new ManagerSaveException("Невозможно работать с файлом.");
         }
@@ -45,27 +52,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             createFile(FILE_NAME);
         }
 
-
         final FileBackedTaskManager result = new FileBackedTaskManager(file);
         FileReader reader = new FileReader(file, StandardCharsets.UTF_8);
         try (BufferedReader br = new BufferedReader(reader)) {
-            while (br.ready()) {
-                String line = br.readLine();
-                if (line.equals("id,type,name,status,description,epic")) {
-                    line = br.readLine();
-                }
-                Task task = fromString(line);
-                if (task instanceof Epic) {
-                    result.createEpic((Epic) task);
-                } else if (task instanceof Subtask) {
-                    result.createSubtask((Subtask) task);
-                } else {
-                    result.createTask(task);
-                }
-            }
+            br.readLine();
+
+            br.lines()
+                    .map(line -> fromString(line))
+                    .filter(task -> task != null)
+                    .forEach(task -> {
+                        if (task instanceof Epic) {
+                            result.updateEpicLoadFromFile((Epic) task);
+                            ids++;
+                        } else if (task instanceof Subtask) {
+                            result.updateSubtaskLoadFromFile((Subtask) task);
+                            ids++;
+                        } else {
+                            result.updateTaskLoadFromFile(task);
+                            ids++;
+                        }
+                    });
         } catch (IOException e) {
             System.out.println("Произошла ошибка во время чтения файла.");
         }
+        result.setId(ids);
         return result;
     }
 
@@ -73,43 +83,81 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static final String DELIMITER = ",";
 
     private String getHeader() {
-        return "id,type,name,status,description,epic\n";
+        return "id,type,name,status,description,duration,start,epic\n";
     }
 
     private String toString(Task task) {
-        return task.getId() + DELIMITER + task.getType() + DELIMITER + task.getName() + DELIMITER +
-                task.getStatus() + DELIMITER + task.getDescription() + DELIMITER + "\n";
+        return task.getId() + DELIMITER
+                + task.getType() + DELIMITER
+                + task.getName() + DELIMITER
+                + task.getStatus() + DELIMITER
+                + task.getDescription() + DELIMITER
+                + task.getDuration().toMillis() + DELIMITER
+                + task.getStartTime() + DELIMITER
+                + "\n";
     }
 
     private String toString(Epic epic) {
-        return epic.getId() + DELIMITER + epic.getType() + DELIMITER + epic.getName() + DELIMITER +
-                epic.getStatus() + DELIMITER + epic.getDescription() + DELIMITER + "\n";
+        return epic.getId() + DELIMITER
+                + epic.getType() + DELIMITER
+                + epic.getName() + DELIMITER
+                + epic.getStatus() + DELIMITER
+                + epic.getDescription() + DELIMITER
+                + epic.getDuration().toMillis() + DELIMITER
+                + epic.getStartTime() + DELIMITER
+                + "\n";
     }
 
     private String toString(Subtask subtask) {
-        return subtask.getId() + DELIMITER + subtask.getType() + DELIMITER + subtask.getName() + DELIMITER +
-                subtask.getStatus() + DELIMITER + subtask.getDescription() + DELIMITER + subtask.getEpicId() + "\n";
+        return subtask.getId() + DELIMITER
+                + subtask.getType() + DELIMITER
+                + subtask.getName() + DELIMITER
+                + subtask.getStatus() + DELIMITER
+                + subtask.getDescription() + DELIMITER
+                + subtask.getDuration().toMillis() + DELIMITER
+                + subtask.getStartTime() + DELIMITER
+                + subtask.getEpicId() + "\n";
     }
 
     private static Task fromString(String value) {
         String[] splValue = value.split(DELIMITER);
+        int id = Integer.parseInt(splValue[0]);
         String type = splValue[1];
         String name = splValue[2];
         TaskStatus status = TaskStatus.valueOf(splValue[3]);
         String description = splValue[4];
         int epicId = 0;
-        if (splValue.length > 5) {
-            epicId = Integer.parseInt(splValue[5]);
+        Duration duration = Duration.of(Long.parseLong(splValue[5]), ChronoUnit.MILLIS);
+        LocalDateTime localDateTime = null;
+
+        if (splValue[6] != null && !splValue[6].equals("null")) {
+            localDateTime = LocalDateTime.parse(splValue[6]);
+        }
+
+        if (splValue.length > 7) {
+            epicId = Integer.parseInt(splValue[7]);
         }
 
         if (type.equals("TASK")) {
-            Task task = new Task(name, description, status);
+            if (localDateTime != null) {
+                Task task = new Task(name, description, status, id, duration, localDateTime);
+                return task;
+            }
+            Task task = new Task(name, description, status, id, duration);
             return task;
         } else if (type.equals("EPIC")) {
-            Epic epic = new Epic(name, description, status);
+            if (localDateTime != null) {
+                Epic epic = new Epic(name, description, status, id, duration, localDateTime);
+                return epic;
+            }
+            Epic epic = new Epic(name, description, status, id, duration);
             return epic;
         } else if (type.equals("SUBTASK")) {
-            Subtask subtask = new Subtask(name, description, status, epicId);
+            if (localDateTime != null) {
+                Subtask subtask = new Subtask(name, description, status, epicId, id, duration, localDateTime);
+                return subtask;
+            }
+            Subtask subtask = new Subtask(name, description, status, epicId, id, duration);
             return subtask;
         }
         throw new IllegalArgumentException("Неправильный тип задачи");

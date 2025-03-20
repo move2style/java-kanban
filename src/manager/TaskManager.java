@@ -11,6 +11,12 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
+    void updateTaskLoadFromFile(Task task);
+
+    void updateSubtaskLoadFromFile(Subtask subtask);
+
+    void updateEpicLoadFromFile(Epic epic);
+
     void createSubtask(Subtask subtask);
 
     void updateSubtask(Subtask subtask);
@@ -18,6 +24,8 @@ public interface TaskManager {
     void createEpic(Epic epic);
 
     void updateEpic(Epic epic);
+
+    boolean tasksOverlapTime(Task task1, Task task2);
 
     List getTaskList();
 
@@ -29,13 +37,21 @@ public interface TaskManager {
 
     Subtask getSubtaskById(Integer idSubtask);
 
+    Subtask getSubtaskByIdForStream(Integer idSubtask);
+
     Epic getEpicById(Integer idEpic);
 
     void removeTaskMap();
 
+    void removeTasksPrioritizedTasks();
+
     void removeSubtask();
 
+    void removeSubtasksPrioritizedTasks();
+
     void removeEpicMap();
+
+    void removeEpicsPrioritizedTasks();
 
     void deleteTask(Integer idTask);
 
@@ -46,6 +62,8 @@ public interface TaskManager {
     List getSubtaskListForEpic(Integer idEpic);
 
     List getHistory();
+
+    List<Task> getPrioritizedTasks();
 
     @Override
     String toString();

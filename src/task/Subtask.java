@@ -1,16 +1,29 @@
 package task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
 
     private int epicId;
 
-    public Subtask(String name, String description, TaskStatus priority, int epicId) {
-        super(name, description,  priority);
+    public Subtask(String name, String description, TaskStatus priority, int epicId, Duration duration, LocalDateTime localDateTime) {
+        super(name, description,  priority, duration, localDateTime);
+        this.epicId = epicId;
+    }
+    public Subtask(String name, String description, TaskStatus priority, int epicId, Duration duration) {
+        super(name, description,  priority, duration);
         this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, TaskStatus priority, int epicId,int id) {
-        super(name, description,  priority);
+    public Subtask(String name, String description, TaskStatus priority, int epicId,int id, Duration duration, LocalDateTime localDateTime) {
+        super(name, description, priority, duration, localDateTime);
+        this.epicId = epicId;
+        this.id = id;
+    }
+
+    public Subtask(String name, String description, TaskStatus priority, int epicId,int id, Duration duration) {
+        super(name, description, priority, duration);
         this.epicId = epicId;
         this.id = id;
     }
@@ -32,13 +45,21 @@ public class Subtask extends Task {
     }
 
     @Override
+    public Duration getDuration() {
+        return super.getDuration();
+    }
+
+    @Override
     public String toString() {
         return "Subtask{" +
-                "epicId=" + epicId +
+                "id=" + id +
                 ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
                 ", priority=" + priority +
-                ", id=" + id +
+                ", description='" + description + '\'' +
+                ", epicId=" + epicId +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 }

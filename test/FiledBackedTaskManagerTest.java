@@ -8,8 +8,13 @@ import task.TaskStatus;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
-class FiledBackedTaskManagerTest {
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class FiledBackedTaskManagerTest<FiledBackedTaskManager extends TaskManager> extends TaskManagerTest<FileBackedTaskManager> {
 
     File tmp = File.createTempFile("str", ".tmp");
     TaskManager taskManager = Managers.getDefaultTaskManager(tmp);
@@ -19,10 +24,22 @@ class FiledBackedTaskManagerTest {
     }
 
     @Test
+    public void testException() {
+        assertThrows(ArithmeticException.class, () -> {
+            int a = 10 / 0;
+        }, "Деление на ноль должно приводить к исключению");
+    }
+
+
+    @Test
     void shouldSaveAndReloadData() throws IOException {
-        Task newtask1 = new Task("Zadacha po spisky#1", "opisanie", TaskStatus.NEW);
+        Task newtask1 = new Task("Zadacha po spisky#1", "opisanie", TaskStatus.NEW,
+                Duration.of(10, ChronoUnit.MINUTES),
+                LocalDateTime.now());
         taskManager.createTask(newtask1);
-        Task newtask2 = new Task("Zadacha po spisky#2", "opisanie", TaskStatus.NEW);
+        Task newtask2 = new Task("Zadacha po spisky#2", "opisanie", TaskStatus.NEW,
+                Duration.of(10, ChronoUnit.MINUTES),
+                LocalDateTime.now().minusMinutes(15));
         taskManager.createTask(newtask2);
 
         FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(tmp);
@@ -37,5 +54,10 @@ class FiledBackedTaskManagerTest {
 
         Assert.assertTrue(taskManager.getTaskList().containsAll(taskManager2.getTaskList())
                 && taskManager2.getTaskList().containsAll(taskManager.getTaskList()));
+    }
+
+    @Override
+    protected FileBackedTaskManager getTaskManger() {
+        return new FileBackedTaskManager();
     }
 }

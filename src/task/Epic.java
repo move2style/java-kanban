@@ -1,22 +1,34 @@
 package task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Epic extends Task {
 
     private List<Integer> subtaskIds = new ArrayList<>();
+    protected LocalDateTime endTime;
 
-    public Epic(String name, String description, TaskStatus priority) {
-        super(name, description, priority);
+    public Epic(String name, String description, TaskStatus priority, Duration duration, LocalDateTime localDateTime) {
+        super(name, description, priority, duration, localDateTime);
     }
 
-    public Epic(String name, String description, TaskStatus priority, Integer id) {
-        super(name, description, priority, id);
+    public Epic(String name, String description, TaskStatus priority, Duration duration) {
+        super(name, description, priority, duration);
     }
 
-    public Epic(String name, String description, TaskStatus priority, Integer id, List<Integer> subtaskIds) {
-        super(name, description, priority, id);
+    public Epic(String name, String description, TaskStatus priority, Integer id,Duration duration, LocalDateTime localDateTime) {
+        super(name, description, priority, id, duration, localDateTime);
+    }
+
+    public Epic(String name, String description, TaskStatus priority, Integer id,Duration duration) {
+        super(name, description, priority, id, duration);
+    }
+
+    public Epic(String name, String description, TaskStatus priority, Integer id, List<Integer> subtaskIds,Duration duration, LocalDateTime localDateTime) {
+        super(name, description, priority, id, duration, localDateTime);
         this.subtaskIds = subtaskIds;
     }
 
@@ -37,13 +49,25 @@ public class Epic extends Task {
     }
 
     @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
-                "subtaskIds=" + subtaskIds +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", priority=" + getStatus() +
-                ", id=" + id +
+                ", priority=" + priority +
+                ", subtaskIds=" + subtaskIds +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
                 '}';
     }
 }
