@@ -3,7 +3,6 @@ package task;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Epic extends Task {
@@ -19,15 +18,15 @@ public class Epic extends Task {
         super(name, description, priority, duration);
     }
 
-    public Epic(String name, String description, TaskStatus priority, Integer id,Duration duration, LocalDateTime localDateTime) {
+    public Epic(String name, String description, TaskStatus priority, Integer id, Duration duration, LocalDateTime localDateTime) {
         super(name, description, priority, id, duration, localDateTime);
     }
 
-    public Epic(String name, String description, TaskStatus priority, Integer id,Duration duration) {
+    public Epic(String name, String description, TaskStatus priority, Integer id, Duration duration) {
         super(name, description, priority, id, duration);
     }
 
-    public Epic(String name, String description, TaskStatus priority, Integer id, List<Integer> subtaskIds,Duration duration, LocalDateTime localDateTime) {
+    public Epic(String name, String description, TaskStatus priority, Integer id, List<Integer> subtaskIds, Duration duration, LocalDateTime localDateTime) {
         super(name, description, priority, id, duration, localDateTime);
         this.subtaskIds = subtaskIds;
     }
