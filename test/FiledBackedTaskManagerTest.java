@@ -1,6 +1,7 @@
 import manager.FileBackedTaskManager;
 import manager.Managers;
 import manager.TaskManager;
+import myexeption.ManagerSaveException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import task.Task;
@@ -25,9 +26,7 @@ class FiledBackedTaskManagerTest<FiledBackedTaskManager extends TaskManager> ext
 
     @Test
     public void testException() {
-        assertThrows(ArithmeticException.class, () -> {
-            int a = 10 / 0;
-        }, "Деление на ноль должно приводить к исключению");
+        assertThrows(ManagerSaveException.class,() -> new FileBackedTaskManager().save());
     }
 
 

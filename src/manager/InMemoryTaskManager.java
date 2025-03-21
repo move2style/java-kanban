@@ -23,14 +23,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (taskMap.size() > 0) {
-            Stream<Task> stream = getPrioritizedTasks().stream();
-            boolean overlaps = stream.anyMatch(existingTask -> tasksOverlapTime(task, existingTask));
+            boolean overlaps = getPrioritizedTasks().stream().anyMatch(existingTask -> tasksOverlapTime(task, existingTask));
 
             if (overlaps) {
                 return;
             }
         }
-
 
         int newId = generateId();
         task.setId(newId);
@@ -60,8 +58,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (taskMap.size() > 0) {
-            Stream<Task> stream1 = getPrioritizedTasks().stream();
-            boolean overlaps = stream1.anyMatch(existingTask -> tasksOverlapTime(task, existingTask));
+            boolean overlaps = getPrioritizedTasks().stream().anyMatch(existingTask -> tasksOverlapTime(task, existingTask));
 
             if (overlaps) {
                 Task taskToRemove = prioritizedTasks.stream()
@@ -92,7 +89,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
+
     public void updateTaskLoadFromFile(Task task) {
         if (Objects.isNull(task.getId())) {
             return;
@@ -114,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
+
     public void updateSubtaskLoadFromFile(Subtask subtask) {
         if (Objects.isNull(subtask.getEpicId())) {
             return;
@@ -157,7 +154,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
+
     public void updateEpicLoadFromFile(Epic epic) {
 
         if (epicMap.containsKey(epic.getId())) {
@@ -191,8 +188,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (subtaskMap.size() > 0) {
-            Stream<Task> stream1 = getPrioritizedTasks().stream();
-            boolean overlaps = stream1.anyMatch(existingTask -> tasksOverlapTime(subtask, existingTask));
+            boolean overlaps = getPrioritizedTasks().stream().anyMatch(existingTask -> tasksOverlapTime(subtask, existingTask));
 
             if (overlaps) {
                 return;
@@ -258,8 +254,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (subtaskMap.size() > 0) {
-            Stream<Task> stream1 = getPrioritizedTasks().stream();
-            boolean overlaps = stream1.anyMatch(existingTask -> tasksOverlapTime(subtask, existingTask));
+            boolean overlaps = getPrioritizedTasks().stream().anyMatch(existingTask -> tasksOverlapTime(subtask, existingTask));
             if (overlaps) {
                 Task taskToRemove = prioritizedTasks.stream()
                         .filter(t -> t.getId() == subtask.getId())
@@ -340,7 +335,7 @@ public class InMemoryTaskManager implements TaskManager {
         epicMap.put(epic.getId(), epic);
     }
 
-    @Override
+
     public boolean tasksOverlapTime(Task task1, Task task2) {
         if (task1.getStartTime() == null || task2.getStartTime() == null || task1.getDuration() == null || task2.getDuration() == null) {
             return false;
@@ -382,7 +377,7 @@ public class InMemoryTaskManager implements TaskManager {
         return subtask;
     }
 
-    @Override
+
     public Subtask getSubtaskByIdForStream(Integer idSubtask) {
         Subtask subtask = subtaskMap.get(idSubtask);
         return subtask;
