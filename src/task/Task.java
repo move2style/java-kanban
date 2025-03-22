@@ -1,6 +1,9 @@
 package task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
+
 import org.junit.platform.engine.support.hierarchical.EngineExecutionContext;
 
 
@@ -9,22 +12,42 @@ public class Task implements EngineExecutionContext {
     protected String description;
     protected TaskStatus priority;
     protected Integer id;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
     public Task() {
     }
 
-    public Task(String name, String description, TaskStatus priority) {
+    public Task(String name, String description, TaskStatus priority, Duration duration) {
         this.name = name;
         this.description = description;
         this.priority = priority;
-
+        this.duration = duration;
     }
 
-    public Task(String name, String description, TaskStatus priority, Integer id) {
+    public Task(String name, String description, TaskStatus priority, Duration duration, LocalDateTime localDateTime) {
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.duration = duration;
+        this.startTime = localDateTime;
+    }
+
+    public Task(String name, String description, TaskStatus priority, Integer id, Duration duration, LocalDateTime localDateTime) {
         this.name = name;
         this.description = description;
         this.priority = priority;
         this.id = id;
+        this.duration = duration;
+        this.startTime = localDateTime;
+    }
+
+    public Task(String name, String description, TaskStatus priority, Integer id, Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.priority = priority;
+        this.id = id;
+        this.duration = duration;
     }
 
     public String getName() {
@@ -63,6 +86,38 @@ public class Task implements EngineExecutionContext {
         return TaskType.TASK;
     }
 
+    public TaskStatus getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TaskStatus priority) {
+        this.priority = priority;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime != null) {
+            return startTime.plus(duration);
+        } else {
+            return null;
+        }
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,10 +134,14 @@ public class Task implements EngineExecutionContext {
     @Override
     public String toString() {
         return "Task{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", priority=" + priority +
-                ", id=" + id +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 }
+

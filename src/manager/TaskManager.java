@@ -33,9 +33,15 @@ public interface TaskManager {
 
     void removeTaskMap();
 
+    void removeTasksPrioritizedTasks();
+
     void removeSubtask();
 
+    void removeSubtasksPrioritizedTasks();
+
     void removeEpicMap();
+
+    void removeEpicsPrioritizedTasks();
 
     void deleteTask(Integer idTask);
 
@@ -46,6 +52,8 @@ public interface TaskManager {
     List getSubtaskListForEpic(Integer idEpic);
 
     List getHistory();
+
+    List<Task> getPrioritizedTasks();
 
     @Override
     String toString();
