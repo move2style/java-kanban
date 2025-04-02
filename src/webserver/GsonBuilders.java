@@ -14,8 +14,8 @@ public final class GsonBuilders {
 
     }
 
-    public static Gson getGson(){
-        return  new com.google.gson.GsonBuilder()
+    public static Gson getGson() {
+        return new com.google.gson.GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
