@@ -6,9 +6,8 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDateTime;
 
-public class DurationAdapter  extends TypeAdapter<Duration> {
+public class DurationAdapter extends TypeAdapter<Duration> {
     @Override
     public void write(JsonWriter jsonWriter, Duration duration) throws IOException {
         String durationString = String.valueOf(duration.toMillis());

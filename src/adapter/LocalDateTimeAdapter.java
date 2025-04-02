@@ -13,9 +13,9 @@ public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
     @Override
     public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
 
-       String localDateTimeString = Objects.nonNull(localDateTime) //если не пустое тогда
-               ? localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) // изменить формат на DateTimeFormatter.ISO_LOCAL_DATE_TIME
-               : LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME); //иначе взять текущее время и записать в формате DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        String localDateTimeString = Objects.nonNull(localDateTime) //если не пустое тогда
+                ? localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) // изменить формат на DateTimeFormatter.ISO_LOCAL_DATE_TIME
+                : LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME); //иначе взять текущее время и записать в формате DateTimeFormatter.ISO_LOCAL_DATE_TIME
         jsonWriter.value(localDateTimeString);
     }
 
