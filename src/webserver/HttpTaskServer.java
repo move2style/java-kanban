@@ -168,6 +168,4 @@ public class HttpTaskServer {
             case "GET" -> PrioritizedHandler.getPrioritizedHandler(httpExchange);
         }
     }
-
-
 }

@@ -37,7 +37,6 @@ public class EpicHandler extends HttpTaskServer {
 
         if (manager.getEpicById(epicId) == null) {
             httpExchange.sendResponseHeaders(404, 0);
-            return;
         } else {
             String response = gson.toJson(manager.getSubtaskListForEpic(epicId));
             httpHandler.sendText(httpExchange, response);
@@ -50,7 +49,6 @@ public class EpicHandler extends HttpTaskServer {
 
         if (epic == null) {
             httpExchange.sendResponseHeaders(404, 0);
-            return;
         } else {
             String response = gson.toJson(epic);
             httpHandler.sendText(httpExchange, response);

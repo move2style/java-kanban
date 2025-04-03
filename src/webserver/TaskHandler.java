@@ -57,7 +57,6 @@ public class TaskHandler extends HttpTaskServer {
 
         if (task == null) {
             httpExchange.sendResponseHeaders(404, 0);
-            return;
         } else {
             String response = gson.toJson(task);
             httpHandler.sendText(httpExchange, response);

@@ -57,7 +57,6 @@ public class SubtaskHandler extends HttpTaskServer {
 
         if (subtask == null) {
             httpExchange.sendResponseHeaders(404, 0);
-            return;
         } else {
             String response = gson.toJson(subtask);
             httpHandler.sendText(httpExchange, response);
