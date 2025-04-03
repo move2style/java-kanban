@@ -53,12 +53,13 @@ public class TaskHandler extends HttpTaskServer {
 
     public static void getTaskIDHandler(HttpExchange httpExchange, String id) throws IOException {
         Integer taskId = Integer.parseInt(id);
+        Task task = manager.getTaskById(taskId);
 
-        if (manager.getTaskById(taskId) == null) {
+        if (task == null) {
             httpExchange.sendResponseHeaders(404, 0);
             return;
         } else {
-            String response = gson.toJson(manager.getTaskById(taskId));
+            String response = gson.toJson(task);
             httpHandler.sendText(httpExchange, response);
         }
 

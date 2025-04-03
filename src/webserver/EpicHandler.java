@@ -46,12 +46,13 @@ public class EpicHandler extends HttpTaskServer {
 
     public static void getEpicIDHandler(HttpExchange httpExchange, String id) throws IOException {
         Integer epicId = Integer.parseInt(id);
+        Epic epic = manager.getEpicById(epicId);
 
-        if (manager.getEpicById(epicId) == null) {
+        if (epic == null) {
             httpExchange.sendResponseHeaders(404, 0);
             return;
         } else {
-            String response = gson.toJson(manager.getEpicById(epicId));
+            String response = gson.toJson(epic);
             httpHandler.sendText(httpExchange, response);
         }
     }

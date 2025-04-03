@@ -53,12 +53,13 @@ public class SubtaskHandler extends HttpTaskServer {
 
     public static void getSubtaskIDHandler(HttpExchange httpExchange, String id) throws IOException {
         Integer subtaskId = Integer.parseInt(id);
+        Subtask subtask = manager.getSubtaskById(subtaskId);
 
-        if (manager.getSubtaskById(subtaskId) == null) {
+        if (subtask == null) {
             httpExchange.sendResponseHeaders(404, 0);
             return;
         } else {
-            String response = gson.toJson(manager.getSubtaskById(subtaskId));
+            String response = gson.toJson(subtask);
             httpHandler.sendText(httpExchange, response);
         }
 
